@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to CSS -->
+    <script defer src="scripts.js"></script> <!-- Link to JavaScript -->
+</head>
+<body>
+    <header>
+        <h1>Hi, I'm Bob Bao!</h1>
+        <nav>
+            <ul>
+                <li><a href="#" id="about-link">About Me</a></li>
+                <li><a href="#" id="projects-link">Projects</a></li>
+                <li><a href="#" id="contact-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="about-section">
+        <h2>About Me</h2>
+        <p>I'm a PhD student in experimental AMO physics at UChicago & now in transition to Harvard. I build stuff.</p>
+    </section>
+
+    <section id="projects-section" style="display: none;">
+        <h2>Things I Build</h2> <!-- Larger Font -->
+        
+        <div class="project">
+            <h3>Vacuum chamber</h3>
+            <p>From 2022 to this summer (2024), I built the vacuum chamber along with MOT trap optics for a for a Rb-Cs dual-species atom array quantum simulator at the Berien lab. This is the beginning of my journey with neutral atoms.</p>
+            <p>Oh, the person in the center with a bigger smile is Jinyue who was visiting from USTC and had since taken over the experiment after my exit from Bernien Lab. The blurry dude on the right is yours truly. </p>
+            <img src="vacuum chamber.jpeg" alt="Project 1" class="project-image"> <!-- Placeholder for Project 1 Image -->
+        </div>
+    
+        <div class="project">
+            <h3>Rb laser tower <img src="laser emoji.png" alt="Emoji" style="width: 30px; vertical-align: middle;"></h3> <!-- Adding Emoji -->
+            <p>I joined Giulia Semeghini's group at Harvard this fall building another dual-species neutral atom expeirment, now combining alkali Rb atoms with alkaline-earth-like Yb! Check out the rubidium MOT optics I built! Inside this 19'' rack,
+                the saturation absorption locking and offset locking units for Rb D2-line repump & cooling are built. Cooling light is further taper-amplified to support MOT generation, imaging and optical pumping.
+            </p>
+            <img src="rb rack.jpeg" alt="Project 2" class="project-image"> <!-- Placeholder for Project 2 Image -->
+        </div>
+    </section>
+    
+
+    <section id="contact-section" style="display: none;">
+        <h2>Contact</h2>
+        <p>You can reach me at bob_bao@g.harvard.edu .</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 BobBaotheBuilder. All rights reserved.</p>
+    </footer>
+</body>
+</html>

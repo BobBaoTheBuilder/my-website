@@ -1,0 +1,77 @@
+/* Reset some default browser styles */
+body, h1, h2, p {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #C7B2E1; /* Muted Purple for Background */
+    color: #333333; /* Charcoal text for better readability */
+    line-height: 1.6;
+}
+
+header {
+    background-color: #333333; /* Dark Charcoal for Header */
+    color: #FFFFFF; /* White text for contrast */
+    padding: 10px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 10px;
+}
+
+nav ul li a {
+    color: #FFFFFF; /* White for link text */
+    text-decoration: none;
+}
+
+nav ul li a:hover {
+    color: #C7B2E1; /* Muted purple on hover for visibility */
+}
+
+section {
+    padding: 20px;
+    background-color: #FFFFFF; /* White for section backgrounds */
+    color: #333333; /* Charcoal text for sections */
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #333333; /* Dark Charcoal for Footer */
+    color: #FFFFFF; /* White text for contrast */
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Add some margin to the sections so they are spaced from the footer */
+section {
+    margin-bottom: 50px;
+}
+
+.project-image {
+    display: block; /* Makes the image a block element for centering */
+    margin: 0 auto; /* Centers the image */
+    max-width: 60%; /* Sets maximum width to 70% of the screen */
+    max-height: 80vh; /* Sets maximum height to 90% of the viewport height */
+    height: auto; /* Maintains aspect ratio */
+    border-radius: 10px; /* Rounded corners for images */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
