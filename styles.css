@@ -76,22 +76,22 @@ section {
 }
 
 #about-section {
-    display: flex;  /* Use flexbox to align items */
-    align-items: center;  /* Center items vertically */
+    margin: 20px;                /* Add some margin around the section */
+}
+
+#about-section h2, #about-section p {
+    text-align: left;            /* Left-align the header and paragraph */
 }
 
 .profile-image {
-    flex: 1;                /* Allow the image to take up space */
-    max-width: 300px;      /* Set a maximum width (adjust as needed) */
-    width: 100%;           /* Allow the image to be responsive */
-    height: auto;           /* Maintain the aspect ratio */
-    margin-left: 10px;      /* Add margin to the left of the image */
-    max-height: 90vh;      /* Set a maximum height (can adjust as needed) */
+    max-width: 300px;            /* Set maximum width for the image */
+    width: 100%;                 /* Allow image to be responsive */
+    height: auto;                /* Maintain aspect ratio */
+    margin-top: 10px;           /* Add margin above the image */
+    max-height: 90vh;            /* Set a maximum height */
+    display: block;              /* Ensures the image is displayed on a new line */
+    margin-left: auto;           /* Center the image horizontally */
+    margin-right: auto;          /* Center the image horizontally */
 }
 
-
-#about-section p {
-    flex: 1;  /* Allow the text to take up the other half */
-    margin-right: 10px;  /* Add margin to the right of the text */
-}
 
