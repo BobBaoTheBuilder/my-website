@@ -14,57 +14,65 @@
             <ul>
                 <li><a href="#" id="about-link">About Me</a></li>
                 <li><a href="#" id="projects-link">Projects</a></li>
-                <li><a href="#" id="other-projects-link">Other Things I Build</a></li> <!-- Missing link added -->
+                <li><a href="#" id="other-projects-link">Other Things I Build</a></li>
                 <li><a href="#" id="contact-link">Contact</a></li>
             </ul>
         </nav>
     </header>
-    
 
     <section id="about-section">
         <h2>About Me</h2>
         <div class="about-content">
             <p>I'm a PhD student in experimental AMO physics at UChicago & Harvard. I build stuff.</p>
-            <img src="cropped profile.jpg" alt="Profile Photo" class="profile-image"> <!-- Update with your actual image file name -->
+            <img src="cropped profile.jpg" alt="Profile Photo" class="profile-image">
         </div>
     </section>
-    
 
     <section id="projects-section" style="display: none;">
-        <h2>Things I Build</h2> <!-- Larger Font -->
-        
+        <h2>Things I Build</h2>
         <div class="project">
             <h3>Vacuum chamber</h3>
             <p>From 2022 to this summer (2024), I built the vacuum chamber along with MOT trap optics for a Rb-Cs dual-species atom array quantum simulator at the Berien lab. This is the beginning of my journey with neutral atoms.</p>
-            <p>Oh, the person in the center with a bigger smile is Jinyue who was visiting from USTC and had since taken over the experiment after my exit from Bernien Lab. The blurry dude on the right is yours truly. </p>
-            <img src="vacuum chamber.jpeg" alt="Project 1" class="project-image"> <!-- Placeholder for Project 1 Image -->
+            <img src="vacuum chamber.jpeg" alt="Project 1" class="project-image">
         </div>
     
         <div class="project">
-            <h3>Rb laser tower <img src="laser emoji.png" alt="Emoji" style="width: 30px; vertical-align: middle;"></h3> <!-- Adding Emoji -->
-            <p>I joined Giulia Semeghini's group at Harvard this fall building another dual-species neutral atom expeirment, now combining alkali Rb atoms with alkaline-earth-like Yb! Check out the rubidium MOT optics I built! Inside this 19'' rack,
+            <h3>Rb laser tower <img src="laser emoji.png" alt="Emoji" style="width: 30px; vertical-align: middle;"></h3>
+            <p>I joined Giulia Semeghini's group at Harvard this fall building another dual-species neutral atom experiment, now combining alkali Rb atoms with alkaline-earth-like Yb! Check out the rubidium MOT optics I built! Inside this 19'' rack,
                 the saturation absorption locking and offset locking units for Rb D2-line repump & cooling are built. Cooling light is further taper-amplified to support MOT generation, imaging and optical pumping.
             </p>
-            <img src="rb rack.jpeg" alt="Project 2" class="project-image"> <!-- Placeholder for Project 2 Image -->
+            <img src="rb rack.jpeg" alt="Project 2" class="project-image">
         </div>
-
 
         <div class="project">
             <h3>New adventures await!</h3>
-            
         </div>
     </section>
-    
-    <<section id="other-projects-section" style="display: none;">
-        <h2>Other Things I Build </h2>
-        <p>Here’s a simple game I created:</p>
-        <div id="game-container"></div> <!-- Container for the game -->
+
+    <section id="other-projects-section" style="display: none;">
+        <h2>Other Things I Build</h2>
+        <p>A puzzle in construction:</p>
+        <div id="game-board" class="grid"> <!-- Correct ID for the game board -->
+            <div id="blockA" class="block vertical" style="grid-area: 1 / 1 / 3 / 2;">A</div>
+            <div id="blockB" class="block large-square" style="grid-area: 1 / 2 / 3 / 4;">B</div>
+            <div id="blockC" class="block vertical" style="grid-area: 1 / 4 / 3 / 5;">C</div>
+            <div id="blockD" class="block vertical" style="grid-area: 3 / 1 / 5 / 2;">D</div>
+            <div id="blockE" class="block horizontal" style="grid-area: 3 / 2 / 4 / 4;">E</div>
+            <div id="blockF" class="block vertical" style="grid-area: 3 / 4 / 5 / 5;">F</div>
+            <div id="blockG" class="block single" style="grid-area: 4 / 2 / 5 / 3;">G</div>
+            <div id="blockH" class="block single" style="grid-area: 4 / 3 / 5 / 4;">H</div>
+            <div id="blockI" class="block single" style="grid-area: 5 / 1 / 6 / 2;">I</div>
+            <div id="blockJ" class="block single" style="grid-area: 5 / 4 / 6 / 5;">J</div>
+
+        </div>
+        <div>
+        </div>    
+        <div id="status" class="status-box">Status: </div>
     </section>
-    
 
     <section id="contact-section" style="display: none;">
         <h2>Contact</h2>
-        <p>You can reach me at bob_bao@g.harvard.edu .</p>
+        <p>You can reach me at bob_bao@g.harvard.edu.</p>
     </section>
 
     <footer>
