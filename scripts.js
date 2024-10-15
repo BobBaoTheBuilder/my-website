@@ -2,6 +2,7 @@
 function hideAllSections() {
     document.getElementById('about-section').style.display = 'none';
     document.getElementById('projects-section').style.display = 'none';
+    document.getElementById('other-projects-section').style.display = 'none';
     document.getElementById('contact-section').style.display = 'none';
 }
 
@@ -16,7 +17,13 @@ document.getElementById('projects-link').addEventListener('click', function() {
     document.getElementById('projects-section').style.display = 'block';
 });
 
+document.getElementById('other-projects-link').addEventListener('click', function() {
+    hideAllSections();
+    document.getElementById('other-projects-section').style.display = 'block';
+});
+
 document.getElementById('contact-link').addEventListener('click', function() {
     hideAllSections();
     document.getElementById('contact-section').style.display = 'block';
 });
+
