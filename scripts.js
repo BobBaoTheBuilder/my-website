@@ -184,3 +184,19 @@ function canMoveBlock(blockId, newRow, newCol) {
 
     return true; // No overlap, move is allowed
 }
+
+
+function trackDaylightClick() {
+    gtag('event', 'click', {
+        'event_category': 'Outbound Link',
+        'event_label': 'YouTube - Daylight',
+        'value': 1
+    });
+}
+function trackAfterDarkClick() {
+    gtag('event', 'click', {
+        'event_category': 'Outbound Link',
+        'event_label': 'YouTube - AfterDark',
+        'value': 1
+    });
+}
