@@ -163,6 +163,33 @@ section {
 
 }
 
+
+.image-container {
+    display: flex;
+    gap: 16px; /* Adjust spacing between images as desired */
+}
+
+.image-box {
+    text-align: center; /* Centers caption under the image */
+}
+
+.image-box img {
+    width: 100%; /* Adjust as needed */
+    max-width: 300px; /* Set max-width to prevent images from being too large */
+}
+
+.caption {
+    margin-top: 8px;
+    font-size: 14px; /* Adjust as needed */
+    color: #555; /* Optional: change caption color */
+}
+
+
+.projects-images {
+    display: flex;
+    justify-content: center; /* Centers the images */
+    gap: 20px; /* Space between images */
+}
   
 
 
