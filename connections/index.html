@@ -139,6 +139,16 @@
   footer { margin-top: 22px; text-align: center; color: var(--muted); font-size: .8rem; }
   footer select { font: inherit; font-size: .8rem; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
 
+  .haptic-probe {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   @keyframes drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
   @keyframes shake {
     10%, 90% { transform: translateX(-2px); }
@@ -201,7 +211,9 @@
   </footer>
 </main>
 
-<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
+<input type="checkbox" id="haptic" switch class="haptic-probe" tabindex="-1" aria-hidden="true">
+
+<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
 <script>
 (function () {
   "use strict";
@@ -246,10 +258,63 @@
     gateInput: document.getElementById("gate-input"),
     gateSubmit: document.getElementById("gate-submit"),
     gateError: document.getElementById("gate-error"),
-    game: document.getElementById("game")
+    game: document.getElementById("game"),
+    haptic: document.getElementById("haptic")
   };
 
   var puzzle, board, selected, solved, mistakes, guesses;
+
+  // --- sound and haptics ------------------------------------------------
+  // The click is synthesized, so there is no audio file to load. Browsers
+  // only allow sound after a user gesture; the password screen is the first
+  // one, so audio is armed by the time the board appears.
+  var audio = null;
+
+  function ensureAudio() {
+    try {
+      if (!audio) {
+        var Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return null;
+        audio = new Ctx();
+      }
+      if (audio.state === "suspended") audio.resume();
+    } catch (err) {
+      audio = null;
+    }
+    return audio;
+  }
+
+  function tick(frequency) {
+    var ctx = ensureAudio();
+    if (!ctx) return;
+    try {
+      var now = ctx.currentTime;
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(frequency, now);
+      osc.frequency.exponentialRampToValueAtTime(frequency * 0.6, now + 0.05);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.16, now + 0.004);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.08);
+    } catch (err) { /* never let a sound break the game */ }
+  }
+
+  // Safari renders <input switch> as a native toggle and plays a system
+  // haptic when it flips — the only route to vibration iOS gives a web page.
+  // Everywhere else this feature-detects to false and stays silent.
+  var CAN_BUZZ = (function () {
+    try { return "switch" in document.createElement("input"); } catch (err) { return false; }
+  })();
+
+  function buzz() {
+    if (!CAN_BUZZ || !el.haptic) return;
+    try { el.haptic.click(); } catch (err) { /* ignore */ }
+  }
 
   // --- helpers ----------------------------------------------------------
   function shuffled(list) {
@@ -383,8 +448,10 @@
     var at = selected.indexOf(word);
     if (at !== -1) {
       selected.splice(at, 1);
+      tick(440);
     } else if (selected.length < WORDS_PER_GROUP) {
       selected.push(word);
+      tick(660);
     } else {
       return;
     }
@@ -426,6 +493,7 @@
       el.board.classList.remove("shake");
       void el.board.offsetWidth;
       el.board.classList.add("shake");
+      buzz();
       if (isLost()) revealRest();
     }
 
@@ -595,6 +663,7 @@
 
   el.gateForm.addEventListener("submit", function (event) {
     event.preventDefault();
+    ensureAudio();
     unlock(el.gateInput.value.trim(), false);
   });
 
