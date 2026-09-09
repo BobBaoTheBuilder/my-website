@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connections</title>
+<meta name="description" content="Create four groups of four.">
+<meta name="theme-color" content="#f7f7f2">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%8E%82</text></svg>">
+<style>
+  :root {
+    --bg: #f7f7f2;
+    --fg: #121212;
+    --muted: #6b6b6b;
+    --tile: #efefe6;
+    --tile-fg: #121212;
+    --selected: #5a594e;
+    --selected-fg: #ffffff;
+    --line: #d9d9d0;
+    --yellow: #f9df6d;
+    --green: #a0c35a;
+    --blue: #b0c4ef;
+    --purple: #ba81c5;
+    --band-fg: #121212;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16161a;
+      --fg: #f2f2ee;
+      --muted: #a0a0a0;
+      --tile: #2b2b31;
+      --tile-fg: #f2f2ee;
+      --selected: #7a7a8c;
+      --line: #3a3a42;
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Libre Franklin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 16px 12px calc(24px + env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color: transparent;
+  }
+  main { width: 100%; max-width: 520px; }
+  header { text-align: center; margin-bottom: 14px; }
+  h1 { font-size: 1.35rem; letter-spacing: .02em; margin: 0 0 4px; }
+  .subtitle { margin: 0; color: var(--muted); font-size: .9rem; }
+  hr.rule { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
+
+  #solved { display: grid; gap: 8px; margin-bottom: 8px; }
+  #solved:empty { margin-bottom: 0; }
+  .band {
+    border-radius: 6px;
+    padding: 12px 10px;
+    text-align: center;
+    color: var(--band-fg);
+    animation: drop .35s ease;
+  }
+  .band .name { font-weight: 800; text-transform: uppercase; font-size: .82rem; letter-spacing: .03em; }
+  .band .words { font-size: .82rem; margin-top: 2px; }
+  .d0 { background: var(--yellow); }
+  .d1 { background: var(--green); }
+  .d2 { background: var(--blue); }
+  .d3 { background: var(--purple); }
+
+  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .tile {
+    appearance: none;
+    border: 0;
+    border-radius: 6px;
+    background: var(--tile);
+    color: var(--tile-fg);
+    font: inherit;
+    font-weight: 700;
+    font-size: clamp(.62rem, 3.1vw, .95rem);
+    text-transform: uppercase;
+    letter-spacing: .01em;
+    min-height: 74px;
+    padding: 4px 2px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+    transition: transform .08s ease, background .12s ease, color .12s ease;
+  }
+  .tile.len-long { font-size: clamp(.5rem, 2.5vw, .78rem); }
+  .tile.len-xlong { font-size: clamp(.44rem, 2.1vw, .68rem); }
+  .tile:active { transform: scale(.95); }
+  .tile[aria-pressed="true"] { background: var(--selected); color: var(--selected-fg); }
+  .tile:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .board.shake { animation: shake .45s ease; }
+
+  .message { min-height: 1.3em; text-align: center; font-size: .9rem; margin: 12px 0 4px; font-weight: 600; }
+  .mistakes { text-align: center; color: var(--muted); font-size: .85rem; margin: 4px 0 14px; }
+  .dots { letter-spacing: .28em; color: var(--fg); }
+
+  .controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    appearance: none;
+    border: 1px solid var(--fg);
+    background: transparent;
+    color: var(--fg);
+    border-radius: 999px;
+    padding: 11px 18px;
+    font: inherit;
+    font-size: .88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn:disabled { opacity: .35; cursor: default; }
+  .btn.primary { background: var(--fg); color: var(--bg); }
+  .btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+  #endcard { text-align: center; margin-top: 18px; }
+  #endcard h2 { font-size: 1.05rem; margin: 0 0 6px; }
+  .grid-share { font-size: 1.25rem; line-height: 1.25; margin: 8px 0 14px; white-space: pre; }
+  footer { margin-top: 22px; text-align: center; color: var(--muted); font-size: .8rem; }
+  footer select { font: inherit; font-size: .8rem; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+
+  @keyframes drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-6px); }
+    40%, 60% { transform: translateX(6px); }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1 id="title">Connections</h1>
+    <p class="subtitle">Create four groups of four!</p>
+  </header>
+  <hr class="rule">
+
+  <section id="solved" aria-live="polite"></section>
+  <div id="board" class="board" role="group" aria-label="Puzzle board"></div>
+
+  <div id="status">
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+    <p class="mistakes">Mistakes remaining: <span id="dots" class="dots"></span></p>
+  </div>
+
+  <div class="controls" id="controls">
+    <button class="btn" id="shuffle" type="button">Shuffle</button>
+    <button class="btn" id="deselect" type="button" disabled>Deselect all</button>
+    <button class="btn primary" id="submit" type="button" disabled>Submit</button>
+  </div>
+
+  <section id="endcard" hidden>
+    <h2 id="endtitle"></h2>
+    <div class="grid-share" id="share"></div>
+    <div class="controls">
+      <button class="btn" id="copy" type="button">Copy results</button>
+      <button class="btn primary" id="again" type="button">Play again</button>
+    </div>
+  </section>
+
+  <footer>
+    <div id="picker-wrap" hidden>
+      <label for="picker">Puzzle: </label>
+      <select id="picker"></select>
+    </div>
+  </footer>
+</main>
+
+<script id="puzzle-data" type="text/plain">W3sidGl0bGUiOiJNYWdnaWUncyBCaXJ0aGRheSIsImdyb3VwcyI6W3sibmFtZSI6IlNtYWxsIHNwaGVyZXMiLCJkaWZmaWN1bHR5IjowLCJ3b3JkcyI6WyJQRUJCTEUiLCJQSU5CQUxMIiwiQ1VFIEJBTEwiLCJCT0JBIl19LHsibmFtZSI6IlBMQUNFSE9MREVSIOKAlCB3cml0ZSBhIHJlYWwgZ3JvdXAgaGVyZSIsImRpZmZpY3VsdHkiOjEsIndvcmRzIjpbIkRVTU1ZIiwiRklMTEVSIiwiU1RBTkQtSU4iLCJERUNPWSJdfSx7Im5hbWUiOiJQTEFDRUhPTERFUiDigJQgd3JpdGUgYSByZWFsIGdyb3VwIGhlcmUiLCJkaWZmaWN1bHR5IjoyLCJ3b3JkcyI6WyJURU1QIiwiRFJBRlQiLCJNT0NLIiwiU1RVQiJdfSx7Im5hbWUiOiJQTEFDRUhPTERFUiDigJQgd3JpdGUgYSByZWFsIGdyb3VwIGhlcmUiLCJkaWZmaWN1bHR5IjozLCJ3b3JkcyI6WyJUQkQiLCJTT09OIiwiTEFURVIiLCJQRU5ESU5HIl19XX0seyJ0aXRsZSI6IlBhcnR5IFRpbWUiLCJncm91cHMiOlt7Im5hbWUiOiJQYXJ0eSBzdXBwbGllcyIsImRpZmZpY3VsdHkiOjAsIndvcmRzIjpbIlNUUkVBTUVSIiwiQ09ORkVUVEkiLCJCQU5ORVIiLCJQSU5BVEEiXX0seyJuYW1lIjoiSWNlIGNyZWFtIGZsYXZvcnMiLCJkaWZmaWN1bHR5IjoxLCJ3b3JkcyI6WyJWQU5JTExBIiwiTUlOVCIsIlBJU1RBQ0hJTyIsIlJPQ0tZIFJPQUQiXX0seyJuYW1lIjoiU3VycHJpc2UgX19fIiwiZGlmZmljdWx0eSI6Miwid29yZHMiOlsiUEFSVFkiLCJBVFRBQ0siLCJXSVRORVNTIiwiRU5ESU5HIl19LHsibmFtZSI6IldvcmRzIGJlZm9yZSBcImRheVwiIiwiZGlmZmljdWx0eSI6Mywid29yZHMiOlsiQklSVEgiLCJET09NUyIsIlNVTiIsIlBBWSJdfV19LHsidGl0bGUiOiJCaXJ0aGRheSBFZGl0aW9uIiwiZ3JvdXBzIjpbeyJuYW1lIjoiVGhpbmdzIHlvdSBibG93IG91dCwgdXAsIG9yIGludG8gYXQgYSBwYXJ0eSIsImRpZmZpY3VsdHkiOjAsIndvcmRzIjpbIkNBTkRMRSIsIkJBTExPT04iLCJIT1JOIiwiQlVCQkxFIl19LHsibmFtZSI6IktpbmRzIG9mIGNha2UiLCJkaWZmaWN1bHR5IjoxLCJ3b3JkcyI6WyJTUE9OR0UiLCJDQVJST1QiLCJNQVJCTEUiLCJQT1VORCJdfSx7Im5hbWUiOiJCaXJ0aGRheSBfX18iLCJkaWZmaWN1bHR5IjoyLCJ3b3JkcyI6WyJTVUlUIiwiQk9ZIiwiQ0FSRCIsIldJU0giXX0seyJuYW1lIjoiSG9tb3Bob25lcyBvZiBudW1iZXJzIiwiZGlmZmljdWx0eSI6Mywid29yZHMiOlsiV09OIiwiQVRFIiwiU0lDS1MiLCJUT08iXX1dfSx7InRpdGxlIjoiV2FybS1VcCIsImdyb3VwcyI6W3sibmFtZSI6IkNpdHJ1cyBmcnVpdHMiLCJkaWZmaWN1bHR5IjowLCJ3b3JkcyI6WyJMRU1PTiIsIkxJTUUiLCJPUkFOR0UiLCJDSVRST04iXX0seyJuYW1lIjoiQ2FyZCBnYW1lcyIsImRpZmZpY3VsdHkiOjEsIndvcmRzIjpbIkhFQVJUUyIsIkJSSURHRSIsIldBUiIsIlNQSVQiXX0seyJuYW1lIjoiX19fIGxpZ2h0IiwiZGlmZmljdWx0eSI6Miwid29yZHMiOlsiTU9PTiIsIkZMQVNIIiwiU1BPVCIsIlRXSSJdfSx7Im5hbWUiOiJDaGVzcyBwaWVjZXMiLCJkaWZmaWN1bHR5IjozLCJ3b3JkcyI6WyJLSU5HIiwiUk9PSyIsIktOSUdIVCIsIlBBV04iXX1dfV0=</script>
+<script>
+(function () {
+  "use strict";
+
+  var WORDS_PER_GROUP = 4;
+  var MAX_MISTAKES = 4;
+  var SQUARES = ["\u{1F7E8}", "\u{1F7E9}", "\u{1F7E6}", "\u{1F7EA}"];
+  var STORAGE_PREFIX = "connections:v1:";
+
+  var raw = document.getElementById("puzzle-data").textContent.trim();
+  var bytes = Uint8Array.from(atob(raw), function (c) { return c.charCodeAt(0); });
+  var PUZZLES = JSON.parse(new TextDecoder().decode(bytes));
+
+  var el = {
+    title: document.getElementById("title"),
+    solved: document.getElementById("solved"),
+    board: document.getElementById("board"),
+    message: document.getElementById("message"),
+    dots: document.getElementById("dots"),
+    status: document.getElementById("status"),
+    controls: document.getElementById("controls"),
+    shuffle: document.getElementById("shuffle"),
+    deselect: document.getElementById("deselect"),
+    submit: document.getElementById("submit"),
+    endcard: document.getElementById("endcard"),
+    endtitle: document.getElementById("endtitle"),
+    share: document.getElementById("share"),
+    copy: document.getElementById("copy"),
+    again: document.getElementById("again"),
+    pickerWrap: document.getElementById("picker-wrap"),
+    picker: document.getElementById("picker")
+  };
+
+  var puzzle, board, selected, solved, mistakes, guesses;
+
+  // --- helpers ----------------------------------------------------------
+  function shuffled(list) {
+    var out = list.slice();
+    for (var i = out.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = out[i]; out[i] = out[j]; out[j] = tmp;
+    }
+    return out;
+  }
+
+  function allWords(p) {
+    return p.groups.reduce(function (acc, g) { return acc.concat(g.words); }, []);
+  }
+
+  function groupOf(word) {
+    for (var i = 0; i < puzzle.groups.length; i++) {
+      if (puzzle.groups[i].words.indexOf(word) !== -1) return i;
+    }
+    return -1;
+  }
+
+  function overlap(group, words) {
+    return words.filter(function (w) { return group.words.indexOf(w) !== -1; }).length;
+  }
+
+  function isLost() { return mistakes >= MAX_MISTAKES; }
+  function isWon() { return solved.length === puzzle.groups.length && !isLost(); }
+  function isOver() { return isWon() || isLost(); }
+
+  // --- persistence ------------------------------------------------------
+  function storageKey() { return STORAGE_PREFIX + puzzle.title; }
+
+  function save() {
+    try {
+      localStorage.setItem(storageKey(), JSON.stringify({
+        board: board, solved: solved, mistakes: mistakes, guesses: guesses
+      }));
+    } catch (err) { /* private mode, blocked storage - play on */ }
+  }
+
+  function restore() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(storageKey()));
+      if (!saved || !Array.isArray(saved.board)) return false;
+      var expected = allWords(puzzle).slice().sort().join("|");
+      var got = saved.board.concat(saved.solved.reduce(function (acc, i) {
+        return acc.concat(puzzle.groups[i].words);
+      }, [])).sort().join("|");
+      if (expected !== got) return false;
+      board = saved.board;
+      solved = saved.solved;
+      mistakes = saved.mistakes;
+      guesses = saved.guesses || [];
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function clearSaved() {
+    try { localStorage.removeItem(storageKey()); } catch (err) { /* ignore */ }
+  }
+
+  // --- rendering --------------------------------------------------------
+  function sizeClass(word) {
+    if (word.length > 11) return "tile len-xlong";
+    if (word.length > 8) return "tile len-long";
+    return "tile";
+  }
+
+  function renderSolved() {
+    el.solved.innerHTML = "";
+    solved.forEach(function (index) {
+      var group = puzzle.groups[index];
+      var band = document.createElement("div");
+      band.className = "band d" + group.difficulty;
+      var name = document.createElement("div");
+      name.className = "name";
+      name.textContent = group.name;
+      var words = document.createElement("div");
+      words.className = "words";
+      words.textContent = group.words.join(", ");
+      band.appendChild(name);
+      band.appendChild(words);
+      el.solved.appendChild(band);
+    });
+  }
+
+  function renderBoard() {
+    el.board.innerHTML = "";
+    board.forEach(function (word) {
+      var tile = document.createElement("button");
+      tile.type = "button";
+      tile.className = sizeClass(word);
+      tile.textContent = word;
+      tile.setAttribute("aria-pressed", selected.indexOf(word) !== -1 ? "true" : "false");
+      tile.addEventListener("click", function () { toggle(word); });
+      el.board.appendChild(tile);
+    });
+  }
+
+  function renderStatus() {
+    el.dots.textContent = new Array(Math.max(0, MAX_MISTAKES - mistakes) + 1).join("●") || "—";
+    el.submit.disabled = selected.length !== WORDS_PER_GROUP || isOver();
+    el.deselect.disabled = selected.length === 0 || isOver();
+    el.shuffle.disabled = isOver();
+  }
+
+  function say(text) { el.message.textContent = text || ""; }
+
+  function shareGrid() {
+    return guesses.map(function (guess) {
+      return guess.map(function (word) { return SQUARES[puzzle.groups[groupOf(word)].difficulty]; }).join("");
+    }).join("\n");
+  }
+
+  function renderEnd() {
+    el.status.hidden = true;
+    el.controls.hidden = true;
+    el.endcard.hidden = false;
+    el.endtitle.textContent = isWon()
+      ? (mistakes === 0 ? "Perfect!" : "You got it!")
+      : "Next time!";
+    el.share.textContent = shareGrid();
+  }
+
+  // --- play -------------------------------------------------------------
+  function toggle(word) {
+    if (isOver()) return;
+    var at = selected.indexOf(word);
+    if (at !== -1) {
+      selected.splice(at, 1);
+    } else if (selected.length < WORDS_PER_GROUP) {
+      selected.push(word);
+    } else {
+      return;
+    }
+    say("");
+    renderBoard();
+    renderStatus();
+  }
+
+  function alreadyGuessed(words) {
+    var key = words.slice().sort().join("|");
+    return guesses.some(function (guess) { return guess.slice().sort().join("|") === key; });
+  }
+
+  function submit() {
+    if (selected.length !== WORDS_PER_GROUP || isOver()) return;
+    if (alreadyGuessed(selected)) {
+      say("Already guessed!");
+      return;
+    }
+
+    var best = -1;
+    var bestOverlap = -1;
+    puzzle.groups.forEach(function (group, index) {
+      if (solved.indexOf(index) !== -1) return;
+      var score = overlap(group, selected);
+      if (score > bestOverlap) { bestOverlap = score; best = index; }
+    });
+
+    guesses.push(selected.slice());
+
+    if (bestOverlap === WORDS_PER_GROUP) {
+      solved.push(best);
+      board = board.filter(function (word) { return puzzle.groups[best].words.indexOf(word) === -1; });
+      selected = [];
+      say(isWon() ? "" : "Nice.");
+    } else {
+      mistakes += 1;
+      say(bestOverlap === WORDS_PER_GROUP - 1 ? "One away…" : "Not a group.");
+      el.board.classList.remove("shake");
+      void el.board.offsetWidth;
+      el.board.classList.add("shake");
+      if (isLost()) revealRest();
+    }
+
+    renderSolved();
+    renderBoard();
+    renderStatus();
+    save();
+    if (isOver()) renderEnd();
+  }
+
+  function revealRest() {
+    puzzle.groups.forEach(function (group, index) {
+      if (solved.indexOf(index) === -1) solved.push(index);
+    });
+    solved.sort(function (a, b) {
+      return puzzle.groups[a].difficulty - puzzle.groups[b].difficulty;
+    });
+    board = [];
+    selected = [];
+  }
+
+  // --- setup ------------------------------------------------------------
+  function start(index, fresh) {
+    puzzle = PUZZLES[index];
+    el.title.textContent = puzzle.title;
+    document.title = puzzle.title;
+    selected = [];
+    el.status.hidden = false;
+    el.controls.hidden = false;
+    el.endcard.hidden = true;
+    say("");
+
+    if (fresh) clearSaved();
+    if (!fresh && restore()) {
+      // picked up where the last visit left off
+    } else {
+      board = shuffled(allWords(puzzle));
+      solved = [];
+      mistakes = 0;
+      guesses = [];
+    }
+
+    renderSolved();
+    renderBoard();
+    renderStatus();
+    if (isOver()) renderEnd();
+    try { localStorage.setItem(STORAGE_PREFIX + "last", String(index)); } catch (err) { /* ignore */ }
+  }
+
+  function initialIndex() {
+    var param = new URLSearchParams(location.search).get("p");
+    var wanted = param === null ? NaN : parseInt(param, 10) - 1;
+    if (!isNaN(wanted) && wanted >= 0 && wanted < PUZZLES.length) return wanted;
+    try {
+      var last = parseInt(localStorage.getItem(STORAGE_PREFIX + "last"), 10);
+      if (!isNaN(last) && last >= 0 && last < PUZZLES.length) return last;
+    } catch (err) { /* ignore */ }
+    return 0;
+  }
+
+  el.submit.addEventListener("click", submit);
+  el.shuffle.addEventListener("click", function () {
+    board = shuffled(board);
+    renderBoard();
+    save();
+  });
+  el.deselect.addEventListener("click", function () {
+    selected = [];
+    renderBoard();
+    renderStatus();
+  });
+  el.again.addEventListener("click", function () {
+    start(PUZZLES.indexOf(puzzle), true);
+  });
+  el.copy.addEventListener("click", function () {
+    var text = puzzle.title + "\n" + shareGrid();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        el.copy.textContent = "Copied!";
+        setTimeout(function () { el.copy.textContent = "Copy results"; }, 1500);
+      }, function () { el.copy.textContent = "Copy failed"; });
+    } else {
+      el.copy.textContent = "Copy failed";
+    }
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") submit();
+    if (event.key === "Escape") { selected = []; renderBoard(); renderStatus(); }
+  });
+
+  if (PUZZLES.length > 1) {
+    el.pickerWrap.hidden = false;
+    PUZZLES.forEach(function (p, index) {
+      var option = document.createElement("option");
+      option.value = String(index);
+      option.textContent = p.title;
+      el.picker.appendChild(option);
+    });
+    el.picker.addEventListener("change", function () {
+      start(parseInt(el.picker.value, 10), false);
+    });
+  }
+
+  var startIndex = initialIndex();
+  el.picker.value = String(startIndex);
+  start(startIndex, false);
+})();
+</script>
+</body>
+</html>
