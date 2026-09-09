@@ -54,6 +54,23 @@
   .subtitle { margin: 0; color: var(--muted); font-size: .9rem; }
   hr.rule { border: 0; border-top: 1px solid var(--line); margin: 12px 0; }
 
+  #gate { text-align: center; margin: 26px 0; }
+  .gate-lead { color: var(--muted); font-size: .9rem; margin: 0 0 14px; }
+  #gate-form { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  #gate-input {
+    font: inherit;
+    font-size: 1rem;
+    letter-spacing: .18em;
+    text-align: center;
+    padding: 11px 14px;
+    width: 190px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--tile);
+    color: var(--fg);
+  }
+  #gate-input:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
   #solved { display: grid; gap: 8px; margin-bottom: 8px; }
   #solved:empty { margin-bottom: 0; }
   .band {
@@ -140,6 +157,17 @@
   </header>
   <hr class="rule">
 
+  <section id="gate" hidden>
+    <p class="gate-lead">This one's private. Enter the password to play.</p>
+    <form id="gate-form" autocomplete="off">
+      <input id="gate-input" type="password" inputmode="numeric" autocomplete="off"
+             aria-label="Password" placeholder="••••••••">
+      <button class="btn primary" id="gate-submit" type="submit">Enter</button>
+    </form>
+    <p id="gate-error" class="message" role="status" aria-live="polite"></p>
+  </section>
+
+  <div id="game" hidden>
   <section id="solved" aria-live="polite"></section>
   <div id="board" class="board" role="group" aria-label="Puzzle board"></div>
 
@@ -163,6 +191,8 @@
     </div>
   </section>
 
+  </div>
+
   <footer>
     <div id="picker-wrap" hidden>
       <label for="picker">Puzzle: </label>
@@ -171,7 +201,7 @@
   </footer>
 </main>
 
-<script id="puzzle-data" type="text/plain">W3sidGl0bGUiOiJNYWdnaWUncyBCaXJ0aGRheSIsImdyb3VwcyI6W3sibmFtZSI6IlNtYWxsIHNwaGVyZXMiLCJkaWZmaWN1bHR5IjowLCJ3b3JkcyI6WyJQRUJCTEUiLCJQSU5CQUxMIiwiQ1VFIEJBTEwiLCJCT0JBIl19LHsibmFtZSI6IlBMQUNFSE9MREVSIOKAlCB3cml0ZSBhIHJlYWwgZ3JvdXAgaGVyZSIsImRpZmZpY3VsdHkiOjEsIndvcmRzIjpbIkRVTU1ZIiwiRklMTEVSIiwiU1RBTkQtSU4iLCJERUNPWSJdfSx7Im5hbWUiOiJQTEFDRUhPTERFUiDigJQgd3JpdGUgYSByZWFsIGdyb3VwIGhlcmUiLCJkaWZmaWN1bHR5IjoyLCJ3b3JkcyI6WyJURU1QIiwiRFJBRlQiLCJNT0NLIiwiU1RVQiJdfSx7Im5hbWUiOiJQTEFDRUhPTERFUiDigJQgd3JpdGUgYSByZWFsIGdyb3VwIGhlcmUiLCJkaWZmaWN1bHR5IjozLCJ3b3JkcyI6WyJUQkQiLCJTT09OIiwiTEFURVIiLCJQRU5ESU5HIl19XX0seyJ0aXRsZSI6IlBhcnR5IFRpbWUiLCJncm91cHMiOlt7Im5hbWUiOiJQYXJ0eSBzdXBwbGllcyIsImRpZmZpY3VsdHkiOjAsIndvcmRzIjpbIlNUUkVBTUVSIiwiQ09ORkVUVEkiLCJCQU5ORVIiLCJQSU5BVEEiXX0seyJuYW1lIjoiSWNlIGNyZWFtIGZsYXZvcnMiLCJkaWZmaWN1bHR5IjoxLCJ3b3JkcyI6WyJWQU5JTExBIiwiTUlOVCIsIlBJU1RBQ0hJTyIsIlJPQ0tZIFJPQUQiXX0seyJuYW1lIjoiU3VycHJpc2UgX19fIiwiZGlmZmljdWx0eSI6Miwid29yZHMiOlsiUEFSVFkiLCJBVFRBQ0siLCJXSVRORVNTIiwiRU5ESU5HIl19LHsibmFtZSI6IldvcmRzIGJlZm9yZSBcImRheVwiIiwiZGlmZmljdWx0eSI6Mywid29yZHMiOlsiQklSVEgiLCJET09NUyIsIlNVTiIsIlBBWSJdfV19LHsidGl0bGUiOiJCaXJ0aGRheSBFZGl0aW9uIiwiZ3JvdXBzIjpbeyJuYW1lIjoiVGhpbmdzIHlvdSBibG93IG91dCwgdXAsIG9yIGludG8gYXQgYSBwYXJ0eSIsImRpZmZpY3VsdHkiOjAsIndvcmRzIjpbIkNBTkRMRSIsIkJBTExPT04iLCJIT1JOIiwiQlVCQkxFIl19LHsibmFtZSI6IktpbmRzIG9mIGNha2UiLCJkaWZmaWN1bHR5IjoxLCJ3b3JkcyI6WyJTUE9OR0UiLCJDQVJST1QiLCJNQVJCTEUiLCJQT1VORCJdfSx7Im5hbWUiOiJCaXJ0aGRheSBfX18iLCJkaWZmaWN1bHR5IjoyLCJ3b3JkcyI6WyJTVUlUIiwiQk9ZIiwiQ0FSRCIsIldJU0giXX0seyJuYW1lIjoiSG9tb3Bob25lcyBvZiBudW1iZXJzIiwiZGlmZmljdWx0eSI6Mywid29yZHMiOlsiV09OIiwiQVRFIiwiU0lDS1MiLCJUT08iXX1dfSx7InRpdGxlIjoiV2FybS1VcCIsImdyb3VwcyI6W3sibmFtZSI6IkNpdHJ1cyBmcnVpdHMiLCJkaWZmaWN1bHR5IjowLCJ3b3JkcyI6WyJMRU1PTiIsIkxJTUUiLCJPUkFOR0UiLCJDSVRST04iXX0seyJuYW1lIjoiQ2FyZCBnYW1lcyIsImRpZmZpY3VsdHkiOjEsIndvcmRzIjpbIkhFQVJUUyIsIkJSSURHRSIsIldBUiIsIlNQSVQiXX0seyJuYW1lIjoiX19fIGxpZ2h0IiwiZGlmZmljdWx0eSI6Miwid29yZHMiOlsiTU9PTiIsIkZMQVNIIiwiU1BPVCIsIlRXSSJdfSx7Im5hbWUiOiJDaGVzcyBwaWVjZXMiLCJkaWZmaWN1bHR5IjozLCJ3b3JkcyI6WyJLSU5HIiwiUk9PSyIsIktOSUdIVCIsIlBBV04iXX1dfV0=</script>
+<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
 <script>
 (function () {
   "use strict";
@@ -181,9 +211,17 @@
   var SQUARES = ["\u{1F7E8}", "\u{1F7E9}", "\u{1F7E6}", "\u{1F7EA}"];
   var STORAGE_PREFIX = "connections:v1:";
 
-  var raw = document.getElementById("puzzle-data").textContent.trim();
-  var bytes = Uint8Array.from(atob(raw), function (c) { return c.charCodeAt(0); });
-  var PUZZLES = JSON.parse(new TextDecoder().decode(bytes));
+  var dataEl = document.getElementById("puzzle-data");
+  var raw = dataEl.textContent.trim();
+  var ENCRYPTED = dataEl.getAttribute("data-format") === "aes-gcm";
+  var ITERATIONS = parseInt(dataEl.getAttribute("data-iterations"), 10) || 250000;
+  var SALT_BYTES = 16;
+  var NONCE_BYTES = 12;
+  var PUZZLES;
+
+  function bytesFromBase64(text) {
+    return Uint8Array.from(atob(text), function (c) { return c.charCodeAt(0); });
+  }
 
   var el = {
     title: document.getElementById("title"),
@@ -202,7 +240,13 @@
     copy: document.getElementById("copy"),
     again: document.getElementById("again"),
     pickerWrap: document.getElementById("picker-wrap"),
-    picker: document.getElementById("picker")
+    picker: document.getElementById("picker"),
+    gate: document.getElementById("gate"),
+    gateForm: document.getElementById("gate-form"),
+    gateInput: document.getElementById("gate-input"),
+    gateSubmit: document.getElementById("gate-submit"),
+    gateError: document.getElementById("gate-error"),
+    game: document.getElementById("game")
   };
 
   var puzzle, board, selected, solved, mistakes, guesses;
@@ -472,7 +516,8 @@
     if (event.key === "Escape") { selected = []; renderBoard(); renderStatus(); }
   });
 
-  if (PUZZLES.length > 1) {
+  function buildPicker() {
+    if (PUZZLES.length < 2) return;
     el.pickerWrap.hidden = false;
     PUZZLES.forEach(function (p, index) {
       var option = document.createElement("option");
@@ -485,9 +530,86 @@
     });
   }
 
-  var startIndex = initialIndex();
-  el.picker.value = String(startIndex);
-  start(startIndex, false);
+  // --- the password gate ------------------------------------------------
+  // The puzzles are AES-GCM ciphertext; the password is the key, so a wrong
+  // answer doesn't fail a comparison, it fails to decrypt anything.
+  function decryptPuzzles(password) {
+    var blob = bytesFromBase64(raw);
+    var salt = blob.slice(0, SALT_BYTES);
+    var nonce = blob.slice(SALT_BYTES, SALT_BYTES + NONCE_BYTES);
+    var ciphertext = blob.slice(SALT_BYTES + NONCE_BYTES);
+    var subtle = window.crypto && window.crypto.subtle;
+    if (!subtle) return Promise.reject(new Error("no-crypto"));
+
+    return subtle
+      .importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveKey"])
+      .then(function (baseKey) {
+        return subtle.deriveKey(
+          { name: "PBKDF2", salt: salt, iterations: ITERATIONS, hash: "SHA-256" },
+          baseKey,
+          { name: "AES-GCM", length: 256 },
+          false,
+          ["decrypt"]
+        );
+      })
+      .then(function (key) {
+        return subtle.decrypt({ name: "AES-GCM", iv: nonce }, key, ciphertext);
+      })
+      .then(function (plain) {
+        return JSON.parse(new TextDecoder().decode(plain));
+      });
+  }
+
+  function boot(puzzles) {
+    PUZZLES = puzzles;
+    el.gate.hidden = true;
+    el.game.hidden = false;
+    buildPicker();
+    var startIndex = initialIndex();
+    el.picker.value = String(startIndex);
+    start(startIndex, false);
+  }
+
+  function unlock(password, quiet) {
+    if (!password) return;
+    el.gateSubmit.disabled = true;
+    el.gateError.textContent = quiet ? "" : "Checking…";
+    decryptPuzzles(password).then(function (puzzles) {
+      try { localStorage.setItem(STORAGE_PREFIX + "key", password); } catch (err) { /* ignore */ }
+      el.gateSubmit.disabled = false;
+      el.gateError.textContent = "";
+      boot(puzzles);
+    }, function (error) {
+      // A remembered password that no longer works just drops us at the prompt.
+      try { localStorage.removeItem(STORAGE_PREFIX + "key"); } catch (err) { /* ignore */ }
+      el.gateSubmit.disabled = false;
+      el.gateInput.value = "";
+      el.gateError.textContent = quiet
+        ? ""
+        : (error && error.message === "no-crypto"
+            ? "This page needs to be opened over https to unlock."
+            : "Wrong password.");
+      if (!quiet) el.gateInput.focus();
+    });
+  }
+
+  el.gateForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    unlock(el.gateInput.value.trim(), false);
+  });
+
+  if (!ENCRYPTED) {
+    boot(JSON.parse(new TextDecoder().decode(bytesFromBase64(raw))));
+  } else {
+    el.gate.hidden = false;
+    var remembered = null;
+    try { remembered = localStorage.getItem(STORAGE_PREFIX + "key"); } catch (err) { /* ignore */ }
+    if (remembered) {
+      unlock(remembered, true);
+    } else {
+      el.gateInput.focus();
+    }
+  }
 })();
 </script>
 </body>
