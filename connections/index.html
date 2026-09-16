@@ -7,6 +7,9 @@
 <meta name="description" content="Create four groups of four.">
 <meta name="theme-color" content="#f7f7f2">
 <meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%8E%82</text></svg>">
 <style>
   :root {
@@ -99,7 +102,7 @@
     font-size: clamp(.62rem, 3.1vw, .95rem);
     text-transform: uppercase;
     letter-spacing: .01em;
-    min-height: 74px;
+    aspect-ratio: 1 / 1;
     padding: 4px 2px;
     cursor: pointer;
     overflow-wrap: anywhere;
@@ -110,11 +113,30 @@
   .tile:active { transform: scale(.95); }
   .tile[aria-pressed="true"] { background: var(--selected); color: var(--selected-fg); }
   .tile:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
-  .board.shake { animation: shake .45s ease; }
+  .tile.shake { animation: shake .5s ease; }
+  .tile.pop { animation: pop .3s ease; }
 
-  .message { min-height: 1.3em; text-align: center; font-size: .9rem; margin: 12px 0 4px; font-weight: 600; }
-  .mistakes { text-align: center; color: var(--muted); font-size: .85rem; margin: 4px 0 14px; }
-  .dots { letter-spacing: .28em; color: var(--fg); }
+  /* The toast floats just above the board, as it does in the real game. */
+  .toast-slot { position: relative; height: 0; }
+  .toast {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background: var(--fg);
+    color: var(--bg);
+    font-size: .82rem;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 5px;
+    z-index: 2;
+    animation: drop .18s ease;
+  }
+
+  .mistakes { text-align: center; color: var(--muted); font-size: .85rem; margin: 18px 0 14px; }
+  .dots { display: inline-flex; gap: 7px; vertical-align: middle; margin-left: 4px; }
+  .dot { width: 13px; height: 13px; border-radius: 50%; background: var(--selected); }
 
   .controls { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .btn {
@@ -129,8 +151,9 @@
     font-weight: 600;
     cursor: pointer;
   }
-  .btn:disabled { opacity: .35; cursor: default; }
+  .btn:disabled { opacity: .4; cursor: default; }
   .btn.primary { background: var(--fg); color: var(--bg); }
+  .btn.primary:disabled { background: transparent; color: var(--fg); }
   .btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 
   #endcard { text-align: center; margin-top: 18px; }
@@ -150,6 +173,10 @@
   }
 
   @keyframes drop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  @keyframes pop {
+    0%, 100% { transform: none; }
+    50% { transform: translateY(-9px); }
+  }
   @keyframes shake {
     10%, 90% { transform: translateX(-2px); }
     20%, 80% { transform: translateX(4px); }
@@ -179,16 +206,16 @@
 
   <div id="game" hidden>
   <section id="solved" aria-live="polite"></section>
+  <div class="toast-slot"><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></div>
   <div id="board" class="board" role="group" aria-label="Puzzle board"></div>
 
   <div id="status">
-    <p id="message" class="message" role="status" aria-live="polite"></p>
     <p class="mistakes">Mistakes remaining: <span id="dots" class="dots"></span></p>
   </div>
 
   <div class="controls" id="controls">
     <button class="btn" id="shuffle" type="button">Shuffle</button>
-    <button class="btn" id="deselect" type="button" disabled>Deselect all</button>
+    <button class="btn" id="deselect" type="button" disabled>Deselect All</button>
     <button class="btn primary" id="submit" type="button" disabled>Submit</button>
   </div>
 
@@ -213,7 +240,7 @@
 
 <input type="checkbox" id="haptic" switch class="haptic-probe" tabindex="-1" aria-hidden="true">
 
-<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
+<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
 <script>
 (function () {
   "use strict";
@@ -239,7 +266,7 @@
     title: document.getElementById("title"),
     solved: document.getElementById("solved"),
     board: document.getElementById("board"),
-    message: document.getElementById("message"),
+    toast: document.getElementById("toast"),
     dots: document.getElementById("dots"),
     status: document.getElementById("status"),
     controls: document.getElementById("controls"),
@@ -263,6 +290,7 @@
   };
 
   var puzzle, board, selected, solved, mistakes, guesses;
+  var busy = false;  // true while a guess animation is playing
 
   // --- sound and haptics ------------------------------------------------
   // The click is synthesized, so there is no audio file to load. Browsers
@@ -418,13 +446,41 @@
   }
 
   function renderStatus() {
-    el.dots.textContent = new Array(Math.max(0, MAX_MISTAKES - mistakes) + 1).join("●") || "—";
-    el.submit.disabled = selected.length !== WORDS_PER_GROUP || isOver();
+    el.dots.innerHTML = "";
+    for (var left = 0; left < Math.max(0, MAX_MISTAKES - mistakes); left++) {
+      var dot = document.createElement("span");
+      dot.className = "dot";
+      el.dots.appendChild(dot);
+    }
+    el.submit.disabled = selected.length !== WORDS_PER_GROUP || isOver() || busy;
     el.deselect.disabled = selected.length === 0 || isOver();
     el.shuffle.disabled = isOver();
   }
 
-  function say(text) { el.message.textContent = text || ""; }
+  var toastTimer = null;
+
+  function say(text) {
+    clearTimeout(toastTimer);
+    if (!text) { el.toast.hidden = true; return; }
+    el.toast.textContent = text;
+    el.toast.hidden = false;
+    toastTimer = setTimeout(function () { el.toast.hidden = true; }, 1800);
+  }
+
+  function tilesFor(words) {
+    return Array.prototype.filter.call(el.board.children, function (node) {
+      return words.indexOf(node.textContent) !== -1;
+    });
+  }
+
+  function animate(words, name) {
+    tilesFor(words).forEach(function (tile, index) {
+      tile.classList.remove(name);
+      void tile.offsetWidth;
+      tile.style.animationDelay = name === "pop" ? index * 50 + "ms" : "0ms";
+      tile.classList.add(name);
+    });
+  }
 
   function shareGrid() {
     return guesses.map(function (guess) {
@@ -444,7 +500,7 @@
 
   // --- play -------------------------------------------------------------
   function toggle(word) {
-    if (isOver()) return;
+    if (busy || isOver()) return;
     var at = selected.indexOf(word);
     if (at !== -1) {
       selected.splice(at, 1);
@@ -466,7 +522,7 @@
   }
 
   function submit() {
-    if (selected.length !== WORDS_PER_GROUP || isOver()) return;
+    if (busy || selected.length !== WORDS_PER_GROUP || isOver()) return;
     if (alreadyGuessed(selected)) {
       say("Already guessed!");
       return;
@@ -480,28 +536,48 @@
       if (score > bestOverlap) { bestOverlap = score; best = index; }
     });
 
-    guesses.push(selected.slice());
+    var guess = selected.slice();
+    guesses.push(guess);
 
     if (bestOverlap === WORDS_PER_GROUP) {
-      solved.push(best);
-      board = board.filter(function (word) { return puzzle.groups[best].words.indexOf(word) === -1; });
-      selected = [];
-      say(isWon() ? "" : "Nice.");
-    } else {
-      mistakes += 1;
-      say(bestOverlap === WORDS_PER_GROUP - 1 ? "One away…" : "Not a group.");
-      el.board.classList.remove("shake");
-      void el.board.offsetWidth;
-      el.board.classList.add("shake");
-      buzz();
-      if (isLost()) revealRest();
+      // The real game bounces the four tiles before they become a band.
+      busy = true;
+      animate(guess, "pop");
+      setTimeout(function () {
+        solved.push(best);
+        board = board.filter(function (word) { return guess.indexOf(word) === -1; });
+        selected = [];
+        busy = false;
+        renderSolved();
+        renderBoard();
+        renderStatus();
+        save();
+        if (isOver()) renderEnd();
+      }, 480);
+      return;
     }
 
-    renderSolved();
-    renderBoard();
+    mistakes += 1;
+    // Only "one away" earns a message; a plain miss just shakes, as in the
+    // real game, and the dots carry the news.
+    if (bestOverlap === WORDS_PER_GROUP - 1) say("One away…");
+    animate(guess, "shake");
+    buzz();
     renderStatus();
     save();
-    if (isOver()) renderEnd();
+
+    if (isLost()) {
+      busy = true;
+      setTimeout(function () {
+        revealRest();
+        busy = false;
+        renderSolved();
+        renderBoard();
+        renderStatus();
+        save();
+        renderEnd();
+      }, 600);
+    }
   }
 
   function revealRest() {
