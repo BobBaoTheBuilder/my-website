@@ -14,3 +14,11 @@ the password the page holds nothing readable. Rebuild it with
 `python3 build_site.py --password <password>`; the password is never stored in
 either repo. Since the ciphertext is public, a short password can be attacked
 offline — this is a party door, not a lock.
+
+## The cats photo
+
+The winning celebration ends on a birthday cake, and it looks for a photo named
+`cats.jpg` (or `cats.png`) in this folder to show behind it. The file is
+optional and nothing else needs to change: drop it in, commit, and the cats
+appear the next time Pages deploys. Any shape of photo works — it is cropped to
+a fixed box so the cake always has room.

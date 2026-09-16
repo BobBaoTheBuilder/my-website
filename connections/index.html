@@ -171,6 +171,136 @@
     z-index: 50;
   }
 
+  .cake-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(12, 12, 14, 0.55);
+    opacity: 0;
+    transition: opacity .5s ease;
+  }
+  .cake-scene.in { opacity: 1; }
+  .cake-scene.out { opacity: 0; }
+
+  .cake-stage {
+    position: relative;
+    width: min(88vw, 400px);
+    padding-bottom: 116px;      /* room for the cake below the photo */
+    transform: translateY(18px) scale(.96);
+    opacity: 0;
+    transition: transform .8s cubic-bezier(.2, .9, .3, 1), opacity .6s ease;
+  }
+  .cake-scene.in .cake-stage { transform: none; opacity: 1; }
+
+  .cake-cats {
+    display: block;
+    width: 100%;
+    height: min(42vh, 330px);
+    object-fit: cover;
+    object-position: 50% 22%;
+    border-radius: 16px;
+    /* the photo fades out at the bottom so the cake sits in front of it */
+    -webkit-mask-image: linear-gradient(#000 70%, transparent 98%);
+    mask-image: linear-gradient(#000 70%, transparent 98%);
+    transform-origin: 50% 100%;
+    transition: transform 2.2s ease-in-out;
+  }
+  .cake-scene.stare .cake-cats { transform: scale(1.05); }         /* leaning in */
+  .cake-scene.blow .cake-cats { transform: scale(1.1) translateY(5px); transition: transform .3s ease-out; }
+
+  .cake { position: absolute; left: 50%; bottom: 0; width: 64%; transform: translateX(-50%); }
+  .candles { display: flex; justify-content: center; gap: 11%; }
+  .candle {
+    position: relative;
+    width: 7px;
+    height: 30px;
+    border-radius: 3px;
+    background: repeating-linear-gradient(45deg, #ff8fb1 0 4px, #fffaf6 4px 8px);
+  }
+  .flame {
+    position: absolute;
+    left: 50%;
+    top: -16px;
+    width: 11px;
+    height: 16px;
+    margin-left: -5.5px;
+    border-radius: 50% 50% 45% 45% / 62% 62% 38% 38%;
+    background: radial-gradient(ellipse at 50% 72%, #fff7cc 0%, #ffc63c 52%, #ff7a18 100%);
+    box-shadow: 0 0 14px rgba(255, 171, 58, .85);
+    transform-origin: 50% 100%;
+    animation: flicker .3s infinite alternate ease-in-out;
+  }
+  .smoke {
+    position: absolute;
+    left: 50%;
+    top: -18px;
+    width: 7px;
+    height: 7px;
+    margin-left: -3.5px;
+    border-radius: 50%;
+    background: #b9b9b9;
+    opacity: 0;
+  }
+  .cake-scene.blow .flame { animation: blowout .55s forwards ease-in; }
+  .cake-scene.blow .smoke { animation: puff 1.7s .4s forwards ease-out; }
+  .cake-scene.blow .candle:nth-child(2) .flame,
+  .cake-scene.blow .candle:nth-child(2) .smoke { animation-delay: .06s, .46s; }
+  .cake-scene.blow .candle:nth-child(3) .flame,
+  .cake-scene.blow .candle:nth-child(3) .smoke { animation-delay: .12s, .52s; }
+  .cake-scene.blow .candle:nth-child(4) .flame,
+  .cake-scene.blow .candle:nth-child(4) .smoke { animation-delay: .18s, .58s; }
+  .cake-scene.blow .candle:nth-child(5) .flame,
+  .cake-scene.blow .candle:nth-child(5) .smoke { animation-delay: .24s, .64s; }
+
+  .tier { position: relative; margin: 0 auto; }
+  .tier.top { width: 74%; height: 42px; border-radius: 7px 7px 0 0; background: linear-gradient(#fdf0da, #f3ddba); }
+  .tier.bottom { width: 100%; height: 50px; border-radius: 7px 7px 4px 4px; background: linear-gradient(#fce7cd, #eccfa8); }
+  .drip {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 20px;
+    background:
+      radial-gradient(circle 10px at 13px 2px, #fff2f7 97%, transparent 100%) repeat-x 0 0 / 26px 20px,
+      linear-gradient(#fff2f7, #fff2f7) no-repeat 0 0 / 100% 9px;
+  }
+  .plate { height: 9px; margin: 0 auto; width: 118%; border-radius: 0 0 9px 9px; background: linear-gradient(#d7d7cf, #bdbdb4); }
+
+  .cake-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -44px;
+    text-align: center;
+    color: #fffdf7;
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: .01em;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .cake-scene.wish .cake-text { opacity: 1; transform: none; }
+
+  @keyframes flicker {
+    from { transform: scaleY(1) rotate(-3deg); }
+    to { transform: scaleY(1.14) rotate(3deg); }
+  }
+  @keyframes blowout {
+    0% { transform: none; opacity: 1; }
+    45% { transform: rotate(52deg) translateX(7px) scaleY(.6); opacity: .9; }
+    100% { transform: rotate(72deg) translateX(10px) scale(.08); opacity: 0; }
+  }
+  @keyframes puff {
+    0% { opacity: .55; transform: translateY(0) scale(.5); }
+    100% { opacity: 0; transform: translateY(-42px) scale(2.1); }
+  }
+
   .haptic-probe {
     position: fixed;
     left: 0;
@@ -248,9 +378,28 @@
 </main>
 
 <canvas id="fireworks" class="fireworks" aria-hidden="true" hidden></canvas>
+
+<div id="cake-scene" class="cake-scene" hidden>
+  <div class="cake-stage">
+    <img id="cake-cats" class="cake-cats" alt="" hidden>
+    <div class="cake">
+      <div class="candles">
+        <div class="candle"><i class="flame"></i><i class="smoke"></i></div>
+        <div class="candle"><i class="flame"></i><i class="smoke"></i></div>
+        <div class="candle"><i class="flame"></i><i class="smoke"></i></div>
+        <div class="candle"><i class="flame"></i><i class="smoke"></i></div>
+        <div class="candle"><i class="flame"></i><i class="smoke"></i></div>
+      </div>
+      <div class="tier top"><span class="drip"></span></div>
+      <div class="tier bottom"><span class="drip"></span></div>
+      <div class="plate"></div>
+    </div>
+    <p class="cake-text" id="cake-text"></p>
+  </div>
+</div>
 <input type="checkbox" id="haptic" switch class="haptic-probe" tabindex="-1" aria-hidden="true">
 
-<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
+<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
 <script>
 (function () {
   "use strict";
@@ -297,7 +446,10 @@
     gateError: document.getElementById("gate-error"),
     game: document.getElementById("game"),
     haptic: document.getElementById("haptic"),
-    fireworks: document.getElementById("fireworks")
+    fireworks: document.getElementById("fireworks"),
+    cakeScene: document.getElementById("cake-scene"),
+    cakeCats: document.getElementById("cake-cats"),
+    cakeText: document.getElementById("cake-text")
   };
 
   var puzzle, board, selected, solved, mistakes, guesses;
@@ -359,7 +511,7 @@
   // Shells burst over the finished board for a few seconds, then the canvas
   // hides itself. Particles are drawn additively over a transparent canvas
   // that is faded each frame, which is what gives them their trails.
-  var SHOW_MS = 5200;
+  var SHOW_MS = 10400;
   var SPARK_COLORS = ["#e0a80c", "#5a9e2f", "#2f6fd0", "#9243a8", "#e0457b"];
   var frame = null;
   var sparks = [];
@@ -401,10 +553,63 @@
     }
   }
 
+  // --- the cake ---------------------------------------------------------
+  // Once the fireworks are spent: the cake rises, the cats lean in and stare
+  // at it, and then they blow the candles out.
+  var CAT_PHOTOS = ["cats.jpg", "cats.png"];
+  var cakeTimers = [];
+
+  function birthdayLine() {
+    var owner = /^(.+?)(?:'s|s')\s+birthday$/i.exec(puzzle.title);
+    return owner ? "Happy Birthday, " + owner[1] + "!" : "Happy Birthday!";
+  }
+
+  function loadCats(index) {
+    // The photo is optional: without it the cake simply stands on its own.
+    if (index >= CAT_PHOTOS.length) { el.cakeCats.hidden = true; return; }
+    var probe = new Image();
+    probe.onload = function () {
+      el.cakeCats.src = probe.src;
+      el.cakeCats.hidden = false;
+    };
+    probe.onerror = function () { loadCats(index + 1); };
+    probe.src = CAT_PHOTOS[index];
+  }
+
+  function clearCake() {
+    cakeTimers.forEach(function (timer) { clearTimeout(timer); });
+    cakeTimers = [];
+    el.cakeScene.className = "cake-scene";
+    el.cakeScene.hidden = true;
+  }
+
+  function showCake() {
+    el.cakeText.textContent = birthdayLine();
+    el.cakeScene.hidden = false;
+    requestAnimationFrame(function () { el.cakeScene.classList.add("in"); });
+
+    [
+      [1000, "stare"],    // the cats fix on the candles
+      [3500, "blow"],     // and blow them out
+      [4400, "wish"],     // Happy Birthday
+      [8200, "out"]
+    ].forEach(function (step) {
+      cakeTimers.push(setTimeout(function () {
+        el.cakeScene.classList.add(step[1]);
+      }, step[0]));
+    });
+    cakeTimers.push(setTimeout(clearCake, 8900));
+  }
+
   function stopFireworks() {
     if (frame) { cancelAnimationFrame(frame); frame = null; }
     sparks = [];
     el.fireworks.hidden = true;
+  }
+
+  function stopShow() {
+    stopFireworks();
+    clearCake();
   }
 
   function celebrate() {
@@ -459,6 +664,7 @@
     }
 
     frame = requestAnimationFrame(step);
+    cakeTimers.push(setTimeout(showCake, SHOW_MS));
   }
 
   // --- helpers ----------------------------------------------------------
@@ -827,6 +1033,8 @@
     el.gate.hidden = true;
     el.game.hidden = false;
     buildPicker();
+    loadCats(0);
+
     var startIndex = initialIndex();
     el.picker.value = String(startIndex);
     start(startIndex, false);
@@ -854,6 +1062,8 @@
       if (!quiet) el.gateInput.focus();
     });
   }
+
+  el.cakeScene.addEventListener("click", clearCake);
 
   el.gateForm.addEventListener("submit", function (event) {
     event.preventDefault();
