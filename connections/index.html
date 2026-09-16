@@ -162,6 +162,15 @@
   footer { margin-top: 22px; text-align: center; color: var(--muted); font-size: .8rem; }
   footer select { font: inherit; font-size: .8rem; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
 
+  .fireworks {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;   /* the buttons underneath stay clickable */
+    z-index: 50;
+  }
+
   .haptic-probe {
     position: fixed;
     left: 0;
@@ -238,9 +247,10 @@
   </footer>
 </main>
 
+<canvas id="fireworks" class="fireworks" aria-hidden="true" hidden></canvas>
 <input type="checkbox" id="haptic" switch class="haptic-probe" tabindex="-1" aria-hidden="true">
 
-<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">TfxhmDQFVtys84+XIkbNXHcHTEjkQfzrJGEVGNvyCYroo10FAEs1pNBIlDqrgJQ8z2uG+8RoWfQZFlCs5f/bOwhlDpn4PdVruxeEhV32jtZTTcjUu9rT386RGO85pTprgaPxIO19Tg4TsJZWQgpb2yYugIlbnNBAsLn0ZMpxLZskoaqJ74H59Z2h+W+/QZPvMxJqQ4fKj8MOhtYnB1iogx0B03MBZlaFuXGp0q3y82sqN6ojnKaV/7TEOx58+bUjeyzWPnVf+bJkCslO0fCAhrGP3KRoMOYjGdtG1spBS+TNQzttfD96UW70qxpkxJjm4NOUEzj+19woHJ3TfWLGy/xbj2xeVXBIFIiRJUiIN5gZfsgTTe2NDdTYgKgMmKNOpoB2VRg1NL/+new6keD1b2K62hvH2pVJNCMx/cJV2vc0q8nZXmsIe65TotG/+lyIDL8mevW+p0iYZEjlwFQkcCdgWn4LhWoXD4gLSHIKjAHRcAveC8PprclztrRGA0viA41lOqNjab9PE5tttpWGJ51ZRC3piDAzx+i+3OQGMR0zc6L1dN981w5NTA4NW6Au/s1gCDdk7c2AJvoQMcs4ZzC9QBqMOMdPj3GGoqIN/StLeTsaexvPFnmWmpygOyED/KgoNbCUVwOJ//L6CiIt6tRZ8RMjhIqf9tJQq5h0AlmU0TWQxrqo3toc9L+zNh+4I1t/2gt3koKrksQZQzGi41yOSWTeDGx2FGJVzlG1c5kbLSV6XoRuNXfQ/CUsVCYecg3gz81ASvf/edsWFgqemuomFYYbJzG796IQelykqkL+yIS6MgdqRl0yNQopa0fA5+rH6TuBr6eTkOcBvAScTeCYSZmHvc/XYd+ZRrz7AfpmlNP9+NDruZtP6uEANqSKvDpVJdc9cWn0S/PmyWhvq6C7omPbH0rZaDQKY03KQMkueoPAnWtnGdiY3VUEG61LRVP20BWQvyqEeRdPiiTwasunR55DF+5S8tu7qcnzMRU+Hn0By5uplL5H8erVKmPD7yJYy7oqkBfvk0NOYcF9e0nnzW0QjmW3ni1WRfhNfWkFT6VR95AYCNa021W1WFSDdOwwxcbRcCzskigIPjClw2eXpok8AETCVZCmT0p/uPbHTYWTI3PmGHcOWWSqLxb1eIda0pj+WhJISXzmNvVeh9Zc6PZxfFVIwzi7nEdYK9C0Nl4Q7prwId1kIXjdxTneJ8nEuHHnVZrPuj9qbcNaAmqnlYVjzK51OP86VF1aVGoj0aYYiEpZZwi67/YwkTwTVHXptqo1VhBQ3nPmESSgVj2NzF7IfTE/At4DYknJcMXaMPzuEy3XSOJd1+LNdwiFEZsI0sx4OAt/3lkUVhYfcymyHx5NioBXx0e4XvYvPorplfc8y8FSsSNw3OZeOBKIcMlJXkFpWZgARmrQsXrTKarIvqxJFlrgjyumeOvtTv1ba2t30os0dnNpxlDNxihxiastOGgomhYgmbqRZf2xf8knkPa++zQUaSU8wst8k7Bk9eixUdv570mG4JXcuzP1HvnHBEQDpheEVV6AMFWkkI+SV3N1LtB+LDHlqeCvjZzJ8j3gxCPRe8nGZ4ejnvmTDqKVn0yTmyF/yrVD23AL1xArgIWrqvbYnJM4NCwxcVfeRXEE3NMK36su3vaOa9LUFb/H+DEkyJHcLgrxjSZcRT/sv3owRcsJkX/2dmPQc7ETfqqLpPLgRhofoPJMVsHunwjOZMpuqBEhklLBpP5fUnsa0Mg6ZvUj7BDNUxHXDbYM3+fsCetf+3moRRJdw9enqOIJpVG+/4vG0HBZ0zCLNeVsxr9jJJMnmK/aYF1uA3Xg+mRf3VwiCdFlzx+3m2XMLtHpXW+SNxZsV3whpKBNWzwah3Vf9AOZPWlw3dw/GM7Q3ob9hxgYcvI+uifzmQnJ5Jyg3aRMbVAVb148GfLcx1TmNJewIBqNjW0ldkaWqcVqvcCnvcCZlD6AwVttAT3WvlfOMT0xi6SXpEerR+Jh29I1OuN6guxd0wBNgi/StxwYOX1kr1jjZT9Uagway6o1ucD+/I20UgzekcI8Y7D3M9JGMQwJMYzSYc8SbFFF35Plwpv2cyq0fM17K+37NZDlx7Pk0MHYNfqSV+MzgQ+6ssNIhl2jjCpT6mjByhA0+PZ4ohpNBD8MH1aqqDY++YB48u8xNf9AQe2lcFLGyqqcN0hPvQ==</script>
+<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
 <script>
 (function () {
   "use strict";
@@ -286,7 +296,8 @@
     gateSubmit: document.getElementById("gate-submit"),
     gateError: document.getElementById("gate-error"),
     game: document.getElementById("game"),
-    haptic: document.getElementById("haptic")
+    haptic: document.getElementById("haptic"),
+    fireworks: document.getElementById("fireworks")
   };
 
   var puzzle, board, selected, solved, mistakes, guesses;
@@ -342,6 +353,112 @@
   function buzz() {
     if (!CAN_BUZZ || !el.haptic) return;
     try { el.haptic.click(); } catch (err) { /* ignore */ }
+  }
+
+  // --- fireworks --------------------------------------------------------
+  // Shells burst over the finished board for a few seconds, then the canvas
+  // hides itself. Particles are drawn additively over a transparent canvas
+  // that is faded each frame, which is what gives them their trails.
+  var SHOW_MS = 5200;
+  var SPARK_COLORS = ["#e0a80c", "#5a9e2f", "#2f6fd0", "#9243a8", "#e0457b"];
+  var frame = null;
+  var sparks = [];
+
+  function calmPreferred() {
+    try {
+      return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function fitCanvas(canvas) {
+    var ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.floor(window.innerWidth * ratio);
+    canvas.height = Math.floor(window.innerHeight * ratio);
+    var context = canvas.getContext("2d");
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    return context;
+  }
+
+  function burst(x, y) {
+    var color = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
+    var count = 48 + Math.floor(Math.random() * 28);
+    var power = 2.6 + Math.random() * 1.8;
+    for (var i = 0; i < count; i++) {
+      var angle = (Math.PI * 2 * i) / count + Math.random() * 0.14;
+      var speed = power * (0.45 + Math.random() * 0.75);
+      sparks.push({
+        x: x,
+        y: y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 1,
+        decay: 0.008 + Math.random() * 0.012,
+        size: 2 + Math.random() * 2,
+        color: color
+      });
+    }
+  }
+
+  function stopFireworks() {
+    if (frame) { cancelAnimationFrame(frame); frame = null; }
+    sparks = [];
+    el.fireworks.hidden = true;
+  }
+
+  function celebrate() {
+    if (!el.fireworks || !el.fireworks.getContext || calmPreferred()) return;
+    stopFireworks();
+    el.fireworks.hidden = false;
+
+    var context = fitCanvas(el.fireworks);
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var started = null;
+    var nextShell = 0;
+
+    function step(now) {
+      if (started === null) started = now;
+      var elapsed = now - started;
+
+      if (elapsed < SHOW_MS && elapsed >= nextShell) {
+        burst(width * (0.15 + Math.random() * 0.7), height * (0.14 + Math.random() * 0.42));
+        nextShell = elapsed + 320 + Math.random() * 380;
+      }
+
+      // Fade what is already on the canvas instead of clearing it, so each
+      // spark leaves a tail behind it.
+      context.globalCompositeOperation = "destination-out";
+      context.fillStyle = "rgba(0, 0, 0, 0.16)";
+      context.fillRect(0, 0, width, height);
+      context.globalCompositeOperation = "source-over";
+
+      for (var i = sparks.length - 1; i >= 0; i--) {
+        var spark = sparks[i];
+        spark.vy += 0.035;          // gravity
+        spark.vx *= 0.987;          // drag
+        spark.vy *= 0.987;
+        spark.x += spark.vx;
+        spark.y += spark.vy;
+        spark.life -= spark.decay;
+        if (spark.life <= 0) { sparks.splice(i, 1); continue; }
+        context.globalAlpha = Math.max(0, spark.life);
+        context.fillStyle = spark.color;
+        context.beginPath();
+        context.arc(spark.x, spark.y, spark.size, 0, Math.PI * 2);
+        context.fill();
+      }
+      context.globalAlpha = 1;
+
+      if (elapsed < SHOW_MS || sparks.length) {
+        frame = requestAnimationFrame(step);
+      } else {
+        stopFireworks();
+      }
+    }
+
+    frame = requestAnimationFrame(step);
   }
 
   // --- helpers ----------------------------------------------------------
@@ -488,7 +605,7 @@
     }).join("\n");
   }
 
-  function renderEnd() {
+  function renderEnd(fresh) {
     el.status.hidden = true;
     el.controls.hidden = true;
     el.endcard.hidden = false;
@@ -496,6 +613,7 @@
       ? (mistakes === 0 ? "Perfect!" : "You got it!")
       : "Next time!";
     el.share.textContent = shareGrid();
+    if (fresh && isWon()) celebrate();
   }
 
   // --- play -------------------------------------------------------------
@@ -552,7 +670,7 @@
         renderBoard();
         renderStatus();
         save();
-        if (isOver()) renderEnd();
+        if (isOver()) renderEnd(true);
       }, 480);
       return;
     }
@@ -575,7 +693,7 @@
         renderBoard();
         renderStatus();
         save();
-        renderEnd();
+        renderEnd(false);   // no fireworks for a loss
       }, 600);
     }
   }
@@ -615,7 +733,7 @@
     renderSolved();
     renderBoard();
     renderStatus();
-    if (isOver()) renderEnd();
+    if (isOver()) renderEnd(false);
     try { localStorage.setItem(STORAGE_PREFIX + "last", String(index)); } catch (err) { /* ignore */ }
   }
 
