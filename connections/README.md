@@ -15,10 +15,17 @@ the password the page holds nothing readable. Rebuild it with
 either repo. Since the ciphertext is public, a short password can be attacked
 offline — this is a party door, not a lock.
 
-## The cats photo
+## The celebration media
 
-The winning celebration ends on a birthday cake, and it looks for a photo named
-`cats.jpg` (or `cats.png`) in this folder to show behind it. The file is
-optional and nothing else needs to change: drop it in, commit, and the cats
-appear the next time Pages deploys. Any shape of photo works — it is cropped to
-a fixed box so the cake always has room.
+| File | What it is |
+| --- | --- |
+| `cats.jpg` | the still shown while the candles burn |
+| `cats-blow.mp4` | the video played when the cake is tapped |
+| `cats-after.jpg` | the still shown afterwards, candles out |
+
+The two stills are the video's own first and last frames, so the cut between
+photo and video is invisible. All three are optional — without them the page
+falls back to a drawn cake that blows its own candles out.
+
+These are ordinary static files. The puzzle itself is encrypted behind the
+password, but anyone who knows these URLs can fetch the media directly.

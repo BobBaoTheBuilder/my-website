@@ -179,7 +179,7 @@
     align-items: center;
     justify-content: center;
     padding: 16px;
-    background: rgba(12, 12, 14, 0.55);
+    background: rgba(10, 10, 12, 0.82);
     opacity: 0;
     transition: opacity .5s ease;
   }
@@ -209,10 +209,33 @@
     transform-origin: 50% 100%;
     transition: transform 2.2s ease-in-out;
   }
-  .cake-scene.stare .cake-cats { transform: scale(1.05); }         /* leaning in */
+  .cake-scene.stare .cake-cats { transform: scale(1.03); }         /* leaning in */
+
+  /* With the photo present it is the cake, so the drawn one steps aside. */
+  .cake-scene.has-photo .cake { display: none; }
+  .cake-scene.has-photo .cake-stage { padding-bottom: 0; width: min(94vw, 620px); }
+  .cake-scene.has-photo .cake-cats {
+    height: auto;
+    max-height: 62vh;
+    object-fit: contain;
+    cursor: pointer;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
   .cake-scene.blow .cake-cats { transform: scale(1.1) translateY(5px); transition: transform .3s ease-out; }
 
-  .cake { position: absolute; left: 50%; bottom: 0; width: 64%; transform: translateX(-50%); }
+  .cake {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 64%;
+    transform: translateX(-50%);
+    cursor: pointer;
+    transition: transform .25s ease;
+  }
+  .cake-scene.wish .cake:hover { transform: translateX(-50%) scale(1.04); }
+  .cake:active { transform: translateX(-50%) scale(.97); }
+  .cake:focus-visible { outline: 2px solid #fffdf7; outline-offset: 6px; border-radius: 8px; }
   .candles { display: flex; justify-content: center; gap: 11%; }
   .candle {
     position: relative;
@@ -280,12 +303,41 @@
     color: #fffdf7;
     font-size: 1.15rem;
     font-weight: 800;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, .6);
     letter-spacing: .01em;
     opacity: 0;
     transform: translateY(6px);
     transition: opacity .6s ease, transform .6s ease;
   }
   .cake-scene.wish .cake-text { opacity: 1; transform: none; }
+
+  .cake-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -68px;
+    text-align: center;
+    color: rgba(255, 253, 247, .72);
+    font-size: .82rem;
+    font-weight: 600;
+    opacity: 0;
+    transition: opacity .6s ease;
+  }
+  .cake-scene.wish .cake-hint { opacity: 1; animation: nudge 2.4s 1.2s infinite; }
+  .cake-scene.playing .cake-stage { display: none; }
+
+  .cake-video {
+    display: block;
+    width: min(92vw, 560px);
+    max-height: 76vh;
+    border-radius: 14px;
+    background: #000;
+  }
+
+  @keyframes nudge {
+    0%, 100% { transform: none; }
+    50% { transform: translateY(-3px); }
+  }
 
   @keyframes flicker {
     from { transform: scaleY(1) rotate(-3deg); }
@@ -382,7 +434,7 @@
 <div id="cake-scene" class="cake-scene" hidden>
   <div class="cake-stage">
     <img id="cake-cats" class="cake-cats" alt="" hidden>
-    <div class="cake">
+    <div class="cake" id="cake" role="button" tabindex="0" aria-label="Play the birthday video">
       <div class="candles">
         <div class="candle"><i class="flame"></i><i class="smoke"></i></div>
         <div class="candle"><i class="flame"></i><i class="smoke"></i></div>
@@ -395,11 +447,13 @@
       <div class="plate"></div>
     </div>
     <p class="cake-text" id="cake-text"></p>
+    <p class="cake-hint" id="cake-hint">Tap the cake</p>
   </div>
+  <video id="cake-video" class="cake-video" src="cats-blow.mp4" playsinline preload="none" hidden></video>
 </div>
 <input type="checkbox" id="haptic" switch class="haptic-probe" tabindex="-1" aria-hidden="true">
 
-<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
+<script id="puzzle-data" type="text/plain" data-format="aes-gcm" data-iterations="250000">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</script>
 <script>
 (function () {
   "use strict";
@@ -449,7 +503,10 @@
     fireworks: document.getElementById("fireworks"),
     cakeScene: document.getElementById("cake-scene"),
     cakeCats: document.getElementById("cake-cats"),
-    cakeText: document.getElementById("cake-text")
+    cakeText: document.getElementById("cake-text"),
+    cakeHint: document.getElementById("cake-hint"),
+    cake: document.getElementById("cake"),
+    cakeVideo: document.getElementById("cake-video")
   };
 
   var puzzle, board, selected, solved, mistakes, guesses;
@@ -557,7 +614,10 @@
   // Once the fireworks are spent: the cake rises, the cats lean in and stare
   // at it, and then they blow the candles out.
   var CAT_PHOTOS = ["cats.jpg", "cats.png"];
+  var CATS_AFTER = "cats-after.jpg";   // the same frame with the candles out
+  var catsLit = null;
   var cakeTimers = [];
+  var videoBroken = false;
 
   function birthdayLine() {
     var owner = /^(.+?)(?:'s|s')\s+birthday$/i.exec(puzzle.title);
@@ -569,8 +629,11 @@
     if (index >= CAT_PHOTOS.length) { el.cakeCats.hidden = true; return; }
     var probe = new Image();
     probe.onload = function () {
+      catsLit = probe.src;
       el.cakeCats.src = probe.src;
       el.cakeCats.hidden = false;
+      el.cakeScene.classList.add("has-photo");
+      new Image().src = CATS_AFTER;   // warm the blown-out frame
     };
     probe.onerror = function () { loadCats(index + 1); };
     probe.src = CAT_PHOTOS[index];
@@ -579,26 +642,64 @@
   function clearCake() {
     cakeTimers.forEach(function (timer) { clearTimeout(timer); });
     cakeTimers = [];
-    el.cakeScene.className = "cake-scene";
+    try {
+      el.cakeVideo.pause();
+      el.cakeVideo.currentTime = 0;
+    } catch (err) { /* ignore */ }
+    el.cakeVideo.hidden = true;
+    el.cakeHint.textContent = "Tap the cake";
+    el.cakeScene.className = catsLit ? "cake-scene has-photo" : "cake-scene";
+    if (catsLit) el.cakeCats.src = catsLit;
     el.cakeScene.hidden = true;
   }
 
   function showCake() {
     el.cakeText.textContent = birthdayLine();
+    try { el.cakeVideo.preload = "auto"; el.cakeVideo.load(); } catch (err) { /* ignore */ }
     el.cakeScene.hidden = false;
     requestAnimationFrame(function () { el.cakeScene.classList.add("in"); });
 
+    // The candles keep burning under the greeting. Nothing blows them out
+    // until someone taps the cake and the cats do it themselves.
     [
-      [1000, "stare"],    // the cats fix on the candles
-      [3500, "blow"],     // and blow them out
-      [4400, "wish"],     // Happy Birthday
-      [8200, "out"]
+      [1000, "stare"],   // the cats fix on the candles
+      [3500, "wish"]     // Happy Birthday, and the invitation to tap
     ].forEach(function (step) {
       cakeTimers.push(setTimeout(function () {
         el.cakeScene.classList.add(step[1]);
       }, step[0]));
     });
-    cakeTimers.push(setTimeout(clearCake, 8900));
+  }
+
+  function playCakeVideo() {
+    if (el.cakeScene.classList.contains("playing")) return;
+    if (videoBroken) { videoUnavailable(); return; }
+    cakeTimers.forEach(function (timer) { clearTimeout(timer); });
+    cakeTimers = [];
+    el.cakeScene.classList.add("playing");
+    el.cakeVideo.hidden = false;
+    var playing = el.cakeVideo.play();
+    if (playing && playing.catch) playing.catch(videoUnavailable);
+  }
+
+  function videoUnavailable() {
+    el.cakeScene.classList.remove("playing");
+    el.cakeVideo.hidden = true;
+    el.cakeHint.textContent = "The video could not play. Tap anywhere to close.";
+  }
+
+  function videoFinished() {
+    // Back to the cake, candles now out, exactly as the cats left them.
+    el.cakeScene.classList.remove("playing");
+    el.cakeVideo.hidden = true;
+    if (catsLit) {
+      el.cakeCats.src = CATS_AFTER;
+    } else {
+      el.cakeScene.classList.add("blow");
+    }
+    el.cakeHint.textContent = "";
+    cakeTimers.push(setTimeout(function () { el.cakeScene.classList.add("out"); }, 2300));
+    cakeTimers.push(setTimeout(clearCake, 3000));
   }
 
   function stopFireworks() {
@@ -1064,6 +1165,29 @@
   }
 
   el.cakeScene.addEventListener("click", clearCake);
+  el.cake.addEventListener("click", function (event) {
+    event.stopPropagation();
+    playCakeVideo();
+  });
+  el.cakeCats.addEventListener("click", function (event) {
+    event.stopPropagation();
+    playCakeVideo();
+  });
+  el.cake.addEventListener("keydown", function (event) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      event.stopPropagation();
+      playCakeVideo();
+    }
+  });
+  el.cakeVideo.addEventListener("click", function (event) { event.stopPropagation(); });
+  el.cakeVideo.addEventListener("ended", videoFinished);
+  // A failure while preloading is noted quietly; the message only appears
+  // if someone actually taps the cake.
+  el.cakeVideo.addEventListener("error", function () {
+    videoBroken = true;
+    if (el.cakeScene.classList.contains("playing")) videoUnavailable();
+  });
 
   el.gateForm.addEventListener("submit", function (event) {
     event.preventDefault();
